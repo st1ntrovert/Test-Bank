@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-
+@pytest.mark.api
 class TestDeposit:
     @pytest.mark.parametrize(
         "username, deposit_amount",
