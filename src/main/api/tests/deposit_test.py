@@ -3,7 +3,14 @@ import requests
 
 
 class TestDeposit:
-    def test_deposit(self):
+    @pytest.mark.parametrize(
+        "username, deposit_amount",
+        [
+            ("Maxim7", 1000),
+            ("Maxim8", 5000),
+            ("Maxim9", 9000),
+        ])
+    def test_deposit_valid(self, username, deposit_amount):
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
             json={
@@ -22,7 +29,7 @@ class TestDeposit:
         create_user_response = requests.post(
             url="http://localhost:4111/api/admin/create",
             json={
-                "username": "Maxim5",
+                "username": username,
                 "password": "Pas!sw0rd",
                 "role": "ROLE_USER"
             },
@@ -34,13 +41,13 @@ class TestDeposit:
         )
 
         assert create_user_response.status_code == 200
-        assert create_user_response.json().get("username") == "Maxim5"
+        assert create_user_response.json().get("username") == username
         assert create_user_response.json().get("role") == "ROLE_USER"
 
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
             json={
-                "username": "Maxim5",
+                "username": username,
                 "password": "Pas!sw0rd"
             },
             headers={
@@ -68,7 +75,7 @@ class TestDeposit:
             url="http://localhost:4111/api/account/deposit",
             json={
                 "accountId": created_account_id,
-                "amount": 1000
+                "amount": deposit_amount
             },
             headers={
                 "accept": "application/json",
@@ -78,7 +85,4 @@ class TestDeposit:
         )
 
         assert deposit_response.status_code == 200
-        assert deposit_response.json().get("balance") == 1000
-
-
-
+        assert deposit_response.json().get("balance") == deposit_amount
