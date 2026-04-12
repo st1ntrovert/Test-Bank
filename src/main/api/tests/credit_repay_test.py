@@ -1,14 +1,15 @@
 import requests
 
+from src.main.api.models.requests.login_user_request import LoginUserRequest
+
 
 class TestCreditRepay:
     def test_credit_repay_valid(self):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -36,12 +37,11 @@ class TestCreditRepay:
         assert create_user_response.json().get("username") == "MaxRepay"
         assert create_user_response.json().get("role") == "ROLE_CREDIT_SECRET"
 
+        login_user_request = LoginUserRequest(username="MaxRepay", password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "MaxRepay",
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -100,12 +100,11 @@ class TestCreditRepay:
         assert credit_repay_response.json().get("amountDeposited") == 5000
 
     def test_credit_repay_invalid(self):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -133,12 +132,11 @@ class TestCreditRepay:
         assert create_user_response.json().get("username") == "MaxNoRepay"
         assert create_user_response.json().get("role") == "ROLE_CREDIT_SECRET"
 
+        login_user_request = LoginUserRequest(username="MaxNoRepay", password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "MaxNoRepay",
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"

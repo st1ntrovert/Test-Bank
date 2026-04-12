@@ -1,14 +1,15 @@
 import requests
 
+from src.main.api.models.requests.login_user_request import LoginUserRequest
+
 
 class TestTransfer:
     def test_transfer(self):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -54,12 +55,11 @@ class TestTransfer:
         assert create_second_user_response.json().get("username") == "MaximSecond222"
         assert create_second_user_response.json().get("role") == "ROLE_USER"
 
+        login_user_request = LoginUserRequest(username="MaximSecond222", password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "MaximSecond222",
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -81,12 +81,11 @@ class TestTransfer:
         assert create_account_response.json().get("balance") == 0
         second_account_id = create_account_response.json().get("id")
 
+        login_user_request = LoginUserRequest(username="MaximFirst111", password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "MaximFirst111",
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -155,12 +154,11 @@ class TestTransfer:
         assert transactions_response.json().get("balance") == 3000
 
     def test_transfer_invalid_amount(self):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -183,12 +181,11 @@ class TestTransfer:
         )
         assert create_user_response.status_code == 200
 
+        login_user_request = LoginUserRequest(username="MaxInvalid2", password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "MaxInvalid2",
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"

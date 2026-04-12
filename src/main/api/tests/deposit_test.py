@@ -1,6 +1,9 @@
 import pytest
 import requests
 
+from src.main.api.models.requests.login_user_request import LoginUserRequest
+
+
 @pytest.mark.api
 class TestDeposit:
     @pytest.mark.parametrize(
@@ -11,12 +14,11 @@ class TestDeposit:
             ("Maxim9", 9000),
         ])
     def test_deposit_valid(self, username, deposit_amount):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -44,12 +46,11 @@ class TestDeposit:
         assert create_user_response.json().get("username") == username
         assert create_user_response.json().get("role") == "ROLE_USER"
 
+        login_user_request = LoginUserRequest(username=username, password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": username,
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -96,12 +97,11 @@ class TestDeposit:
             ("Maximka2225", ""),
         ])
     def test_deposit_invalid(self, username, deposit_amount):
+        login_admin_request = LoginUserRequest(username="admin", password="123456")
+
         login_admin_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": "admin",
-                "password": "123456"
-            },
+            json=login_admin_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"
@@ -129,12 +129,11 @@ class TestDeposit:
         assert create_user_response.json().get("username") == username
         assert create_user_response.json().get("role") == "ROLE_USER"
 
+        login_user_request = LoginUserRequest(username=username, password="Pas!sw0rd")
+
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
-            json={
-                "username": username,
-                "password": "Pas!sw0rd"
-            },
+            json=login_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json"

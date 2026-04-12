@@ -1,12 +1,10 @@
-from abc import ABC
 from http import HTTPStatus
 
 import requests
 from requests import Response
 
-from src.main.api.models.base_model import BaseModel
-from src.main.api.models.create_user_request import CreateUserRequest
-from src.main.api.models.create_user_response import CreateUserResponse
+from src.main.api.models.requests.create_user_request import CreateUserRequest
+from src.main.api.models.responses.create_user_response import CreateUserResponse
 from src.main.api.requests.requester import Requester
 
 
