@@ -4,6 +4,7 @@ import requests
 from src.main.api.models.responses.create_account_response import CreateAccountResponse
 from src.main.api.models.requests.create_user_request import CreateUserRequest
 from src.main.api.models.requests.login_user_request import LoginUserRequest
+from src.main.api.models.responses.create_user_response import CreateUserResponse
 
 
 @pytest.mark.api
@@ -25,7 +26,7 @@ class TestCreateAccount:
 
         create_user_request = CreateUserRequest(username="Max11x", password="Pas!sw0rd", role="ROLE_USER")
 
-        create_user_response = requests.post(
+        response = requests.post(
             url="http://localhost:4111/api/admin/create",
             json=create_user_request.model_dump(),
             headers={
@@ -34,7 +35,10 @@ class TestCreateAccount:
             }
         )
 
-        assert create_user_response.status_code == 200
+        assert response.status_code == 200
+        create_user_response = CreateUserResponse(**response.json())
+        assert create_user_request.username == create_user_response.username
+        assert create_user_request.role == create_user_response.role
 
         login_user_request = LoginUserRequest(username="Max11x", password="Pas!sw0rd")
 
