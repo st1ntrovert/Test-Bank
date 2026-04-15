@@ -14,9 +14,9 @@ class TestDeposit:
     @pytest.mark.parametrize(
         "username, deposit_amount",
         [
-            ("Maxim227", 1000),
-            ("Maxim228", 5000),
-            ("Maxim229", 9000),
+            ("Maxim5", 1000),
+            ("Maxim55", 5000),
+            ("Maxim555", 9000),
         ])
     def test_deposit_valid(self, username, deposit_amount):
         login_admin_request = LoginUserRequest(username="admin", password="123456")
@@ -96,9 +96,9 @@ class TestDeposit:
     @pytest.mark.parametrize(
         "username, deposit_amount",
         [
-            ("Maximka222222", 999),
-            ("Maximka222223", 9001),
-            ("Maximka222224", 0),
+            ("Maximka5", 999),
+            ("Maximka55", 9001),
+            ("Maximka555", 0),
         ])
     def test_deposit_invalid(self, username, deposit_amount):
         login_admin_request = LoginUserRequest(username="admin", password="123456")

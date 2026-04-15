@@ -26,7 +26,7 @@ class TestTransfer:
         assert login_admin_response.status_code == 200
         admin_token = login_admin_response.json().get("token")
 
-        create_first_user_request = CreateUserRequest(username="MaximFirst2", password="Pas!sw0rd", role="ROLE_USER")
+        create_first_user_request = CreateUserRequest(username="MaximFirst3", password="Pas!sw0rd", role="ROLE_USER")
 
         response = requests.post(
             url="http://localhost:4111/api/admin/create",
@@ -43,7 +43,7 @@ class TestTransfer:
         assert create_first_user_response.username == create_first_user_request.username
         assert create_first_user_response.role == create_first_user_request.role
 
-        create_second_user_request = CreateUserRequest(username="MaximSecond2", password="Pas!sw0rd", role="ROLE_USER")
+        create_second_user_request = CreateUserRequest(username="MaximSecond3", password="Pas!sw0rd", role="ROLE_USER")
 
         response = requests.post(
             url="http://localhost:4111/api/admin/create",
@@ -60,7 +60,7 @@ class TestTransfer:
         assert create_second_user_response.username == create_second_user_request.username
         assert create_second_user_response.role == create_second_user_request.role
 
-        login_user_request = LoginUserRequest(username="MaximSecond2", password="Pas!sw0rd")
+        login_user_request = LoginUserRequest(username="MaximSecond3", password="Pas!sw0rd")
 
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
@@ -87,7 +87,7 @@ class TestTransfer:
         assert create_account_response.balance == 0
         second_account_id = create_account_response.id
 
-        login_user_request = LoginUserRequest(username="MaximFirst2", password="Pas!sw0rd")
+        login_user_request = LoginUserRequest(username="MaximFirst3", password="Pas!sw0rd")
 
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
@@ -173,21 +173,20 @@ class TestTransfer:
         assert login_admin_response.status_code == 200
         admin_token = login_admin_response.json().get("token")
 
-        create_user_response = requests.post(
+        create_user_request = CreateUserRequest(username="MaxInvalid3", password="Pas!sw0rd", role="ROLE_USER" )
+
+        response = requests.post(
             url="http://localhost:4111/api/admin/create",
-            json={
-                "username": "MaxInvalid2",
-                "password": "Pas!sw0rd",
-                "role": "ROLE_USER"},
+            json=create_user_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-type": "application/json",
                 "Authorization": f"Bearer {admin_token}"
             }
         )
-        assert create_user_response.status_code == 200
+        assert response.status_code == 200
 
-        login_user_request = LoginUserRequest(username="MaxInvalid2", password="Pas!sw0rd")
+        login_user_request = LoginUserRequest(username="MaxInvalid3", password="Pas!sw0rd")
 
         login_user_response = requests.post(
             url="http://localhost:4111/api/auth/token/login",
@@ -220,27 +219,24 @@ class TestTransfer:
         assert account2.status_code == 201
         account2_id = account2.json().get("id")
 
-        deposit_response = requests.post(
+        deposit_request = DepositRequest(accountId=account1_id, amount=5000)
+
+        response = requests.post(
             url="http://localhost:4111/api/account/deposit",
-            json={
-                "accountId": account1_id,
-                "amount": 5000
-            },
+            json=deposit_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {token}"
             }
         )
-        assert deposit_response.status_code == 200
+        assert response.status_code == 200
 
-        transfer_response = requests.post(
+        transfer_request = TransferRequest(fromAccountId=account1_id, toAccountId=account2_id, amount=499)
+
+        response = requests.post(
             url="http://localhost:4111/api/account/transfer",
-            json={
-                "fromAccountId": account1_id,
-                "toAccountId": account2_id,
-                "amount": 499
-            },
+            json=transfer_request.model_dump(),
             headers={
                 "accept": "application/json",
                 "Content-Type": "application/json",
@@ -248,4 +244,4 @@ class TestTransfer:
             }
         )
 
-        assert transfer_response.status_code == 400
+        assert response.status_code == 400
