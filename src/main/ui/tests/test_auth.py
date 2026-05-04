@@ -25,35 +25,19 @@ def test_login_locked_out_user(page):
     expect(page.locator("[data-test=\"error\"]")).to_be_visible()
 
 
-def test_logout(page):
-    page.goto("https://saucedemo.com/")
+def test_logout(auth_page):
+    auth_page.locator("#react-burger-menu-btn").click()
+    auth_page.locator("#logout_sidebar_link").click()
 
-    page.get_by_placeholder("Username").fill("standard_user")
-    page.get_by_placeholder("Password").fill("secret_sauce")
-
-    page.locator("#login-button").click()
-
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
-
-    page.locator("#react-burger-menu-btn").click()
-    page.locator("#logout_sidebar_link").click()
-
-    expect(page).to_have_url("https://www.saucedemo.com/")
-    expect(page.locator("#login-button")).to_be_visible()
+    expect(auth_page).to_have_url("https://www.saucedemo.com/")
+    expect(auth_page.locator("#login-button")).to_be_visible()
 
 
-def test_logout_visual_user(page):
-    page.goto("https://saucedemo.com/")
+def test_logout_visual_user(auth_page):
+    expect(auth_page).to_have_url("https://www.saucedemo.com/inventory.html")
 
-    page.get_by_placeholder("Username").fill("visual_user")
-    page.get_by_placeholder("Password").fill("secret_sauce")
+    auth_page.locator("#react-burger-menu-btn").click()
+    auth_page.locator("#logout_sidebar_link").click()
 
-    page.locator("#login-button").click()
-
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
-
-    page.locator("#react-burger-menu-btn").click()
-    page.locator("#logout_sidebar_link").click()
-
-    expect(page).to_have_url("https://www.saucedemo.com/")
-    expect(page.locator("#login-button")).to_be_visible()
+    expect(auth_page).to_have_url("https://www.saucedemo.com/")
+    expect(auth_page.locator("#login-button")).to_be_visible()
