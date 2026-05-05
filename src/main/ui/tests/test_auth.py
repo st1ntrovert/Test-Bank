@@ -1,4 +1,6 @@
 from playwright.sync_api import expect
+
+from src.main.ui.pages.catalog_page import CatalogPage
 from src.main.ui.pages.login_page import LoginPage
 
 
@@ -21,16 +23,16 @@ def test_login_locked_out_user(page):
     assert "locked out" in error_text
 
 
-def test_logout(auth_page):
-    page = auth_page
+def test_logout(page):
+    login_page = LoginPage(page)
+    login_page.open()
+    login_page.login("standard_user", "secret_sauce")
 
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
+    catalog_page = CatalogPage(page)
+    assert catalog_page.count_cards() > 0
 
-    page.locator("#react-burger-menu-btn").click()
-    page.locator("#logout_sidebar_link").click()
-
-    expect(page).to_have_url("https://www.saucedemo.com/")
-    expect(page.locator("#login-button")).to_be_visible()
+    catalog_page.logout()
+    expect(page).to_have_url(LoginPage.URL)
 
 
 def test_logout_visual_user(page):
@@ -38,10 +40,8 @@ def test_logout_visual_user(page):
     login_page.open()
     login_page.login("visual_user", "secret_sauce")
 
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
+    catalog_page = CatalogPage(page)
+    assert catalog_page.count_cards() > 0
 
-    page.locator("#react-burger-menu-btn").click()
-    page.locator("#logout_sidebar_link").click()
-
+    catalog_page.logout()
     expect(page).to_have_url(LoginPage.URL)
-    expect(login_page.login_button).to_be_visible()

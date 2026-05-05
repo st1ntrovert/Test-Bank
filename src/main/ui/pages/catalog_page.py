@@ -13,12 +13,13 @@ class CatalogPage:
         self.sort_select = page.locator('[data-test="product-sort-container"]')
         self.username_input = page.get_by_placeholder("Username")
         self.password_input = page.get_by_placeholder("Password")
-        self.login_button = page.locator('#login_button')
+        self.login_button = page.locator('#login-button')
 
     def open(self):
         self.page.goto(self.URL)
 
-    def login(self, username, password):
+    def login(self, username: str, password: str):
+        self.open()
         self.username_input.fill(username)
         self.password_input.fill(password)
         self.login_button.click()
