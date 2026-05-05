@@ -29,12 +29,13 @@ def test_sort_by_name_z_to_a(auth_page):
 
 
 def test_sort_by_price(auth_page):
-    sort_select = auth_page.locator(".product_sort_container")
+    page = auth_page
+    sort_select = page.locator(".product_sort_container")
     expect(sort_select).to_be_visible(timeout=5000)
 
     sort_select.select_option("lohi")
 
-    prices_text = auth_page.locator(".inventory_item_price").all_text_contents()
+    prices_text = page.locator(".inventory_item_price").all_text_contents()
 
     prices = [float(p.replace("$", "")) for p in prices_text]
 
@@ -42,7 +43,7 @@ def test_sort_by_price(auth_page):
 
     sort_select.select_option("hilo")
 
-    prices_text = auth_page.locator(".inventory_item_price").all_text_contents()
+    prices_text = page.locator(".inventory_item_price").all_text_contents()
 
     prices = [float(p.replace("$", "")) for p in prices_text]
 
@@ -105,7 +106,7 @@ def test_product_details_fleece_jacket(auth_page):
     assert product_price == detail_price, "Цена товара не совпадает"
 
 
-def test_remove_item_from_catalog(auth_page):
+def test_remove_item_from_cart(auth_page):
     product_card = auth_page.locator(".inventory_item", has_text="Test.allTheThings() T-Shirt (Red)")
     product_button = product_card.locator('[data-test="add-to-cart-test.allthethings()-t-shirt-(red)"]')
     product_button.click()
@@ -118,7 +119,7 @@ def test_remove_item_from_catalog(auth_page):
     assert product_button.is_visible(), "Кнопка Add to cart не вернулась после удаления товара"
 
 
-def test_remove_onesie_from_catalog(auth_page):
+def test_remove_onesie_from_cart(auth_page):
     product_card = auth_page.locator(".inventory_item", has_text="Sauce Labs Onesie")
     product_button = auth_page.locator('[data-test="add-to-cart-sauce-labs-onesie"]')
     product_button.click()
