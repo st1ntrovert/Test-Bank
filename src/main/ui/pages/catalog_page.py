@@ -14,6 +14,7 @@ class CatalogPage:
         self.username_input = page.get_by_placeholder("Username")
         self.password_input = page.get_by_placeholder("Password")
         self.login_button = page.locator('#login-button')
+        self.cart_button = page.locator('[data-test="shopping-cart-link"]')
 
     def open(self):
         self.page.goto(self.URL)
@@ -73,3 +74,6 @@ class CatalogPage:
 
         self.page.go_back()
         return name, price, detail_name, detail_price
+
+    def open_cart(self):
+        self.cart_button.click()
