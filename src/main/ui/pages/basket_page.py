@@ -1,11 +1,14 @@
 from playwright.sync_api import Page, expect
 
+from src.main.ui.pages.base_page import BasePage
+from src.main.ui.utils.constants import Urls
 
-class BasketPage:
-    URL = 'https://saucedemo.com/cart.html'
+
+class BasketPage(BasePage):
+    URL = Urls.CART
 
     def __init__(self, page: Page):
-        self.page = page
+        super().__init__(page)
         self.cart_link = page.locator('.shopping_cart_link')
         self.continue_shopping_button = page.locator('[data-test="continue-shopping"]')
         self.cart_items = page.locator('.cart_item')

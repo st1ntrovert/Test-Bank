@@ -1,11 +1,15 @@
 from playwright.sync_api import Page, expect
 
+from src.main.ui.pages.base_page import BasePage
+from src.main.ui.utils.constants import Urls
 
-class CheckoutPage:
-    URL = "https://www.saucedemo.com/checkout-step-one.html"
+
+class CheckoutPage(BasePage):
+    URL = Urls.CHECKOUT
+
     def __init__(self, page: Page):
-        self.page = page
-        #step one
+        super().__init__(page)
+        # step one
         self.first_name = page.locator('[data-test="firstName"]')
         self.last_name = page.locator('[data-test="lastName"]')
         self.postal_code = page.locator('[data-test="postalCode"]')
@@ -13,14 +17,14 @@ class CheckoutPage:
         self.continue_button = page.locator('[data-test="continue"]')
         self.error_message = page.locator('[data-test="error"]')
 
-        #step two
+        # step two
         self.finish_button = page.locator('[data-test="finish"]')
         self.cart_list = page.locator('[data-test="cart-list"]')
         self.subtotal_price = page.locator('[data-test="subtotal-label"]')
         self.tax = page.locator('[data-test="tax-label"]')
         self.total_price = page.locator('[data-test="total-label"]')
 
-        #complete
+        # complete
         self.complete_header = page.locator('[data-test="complete-header"]')
         self.complete_text = page.locator('[data-test="complete-text"]')
 

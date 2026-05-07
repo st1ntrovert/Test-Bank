@@ -1,13 +1,14 @@
 from playwright.sync_api import Page
 
-class LoginPage:
-    URL = "https://www.saucedemo.com/"
+from src.main.ui.pages.base_page import BasePage
+from src.main.ui.utils.constants import Urls
+
+
+class LoginPage(BasePage):
+    URL = Urls.BASE
 
     def __init__(self, page: Page):
-        self.page = page
-        self.username_input = page.get_by_placeholder("Username")
-        self.password_input = page.get_by_placeholder("Password")
-        self.login_button = page.locator("#login-button")
+        super().__init__(page)
         self.error_message = page.locator("h3[data-test='error']")
 
     def open(self):

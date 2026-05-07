@@ -1,47 +1,37 @@
-from playwright.sync_api import expect
-
-from src.main.ui.pages.catalog_page import CatalogPage
-from src.main.ui.pages.login_page import LoginPage
+from src.main.ui.steps.catalog_steps import CatalogSteps
+from src.main.ui.steps.login_steps import LoginSteps
+from src.main.ui.utils.constants import Urls
 
 
 def test_auth(page):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.login("standard_user", "secret_sauce")
-
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
+    steps = LoginSteps(page)
+    steps.open_login_page().login("standard_user", "secret_sauce")
+    assert page.url == Urls.CATALOG
 
 
 def test_login_locked_out_user(page):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.login("locked_out_user", "secret_sauce")
-
-    expect(page).to_have_url(LoginPage.URL)
-
-    error_text = login_page.get_error_text()
-    assert "locked out" in error_text
+    steps = LoginSteps(page)
+    steps.open_login_page().login("locked_out_user", "secret_sauce")
+    assert page.url == Urls.BASE
+    error_text = steps.get_error_text()
+    assert "locked out" in error_text, "Ожидаем сообщение о заблокированном пользователе"
 
 
 def test_logout(page):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.login("standard_user", "secret_sauce")
-
-    catalog_page = CatalogPage(page)
-    assert catalog_page.count_cards() > 0
-
-    catalog_page.logout()
-    expect(page).to_have_url(LoginPage.URL)
+    login_steps = LoginSteps(page)
+    catalog_steps = CatalogSteps(page)
+    login_steps.open_login_page().login("standard_user", "secret_sauce")
+    assert catalog_steps.get_products_count() > 0
+    catalog_steps.logout()
+    assert page.url == Urls.BASE
 
 
 def test_logout_visual_user(page):
-    login_page = LoginPage(page)
-    login_page.open()
-    login_page.login("visual_user", "secret_sauce")
+    login_steps = LoginSteps(page)
+    catalog_steps = CatalogSteps(page)
 
-    catalog_page = CatalogPage(page)
-    assert catalog_page.count_cards() > 0
+    login_steps.open_login_page().login("visual_user", "secret_sauce")
+    assert catalog_steps.get_products_count() > 0
 
-    catalog_page.logout()
-    expect(page).to_have_url(LoginPage.URL)
+    catalog_steps.logout()
+    assert page.url == Urls.BASE
