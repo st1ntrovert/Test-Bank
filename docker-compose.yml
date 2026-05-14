@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: clausemerderet/bank_api:latest
+    ports:
+      - "4111:4111"
+    networks:
+      - bank-network
+
+
+networks:
+  bank-network:
+    driver: bridge
